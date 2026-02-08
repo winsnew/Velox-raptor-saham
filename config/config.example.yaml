@@ -1,0 +1,26 @@
+app:
+  name:
+  env:
+
+telegram:
+  bot_token:
+  polling_timeout: 60
+
+database:
+  driver:
+  host:
+  port:
+  user:
+  password:
+  name:
+  sslmode:
+  max_open_conn: 20
+  max_idle_conn: 10
+
+python_service:
+  url:
+  timeout_second: 120
+
+limit:
+  bot_message_per_second: 25
+  per_chat_delay_ms: 1100

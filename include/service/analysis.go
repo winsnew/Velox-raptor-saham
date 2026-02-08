@@ -18,7 +18,7 @@ func AnalyzeStock(telegramID int64, symbol string) (*models.AnalysisResult, erro
 		}
 
 		if user.QuotaUsed >= 5 {
-			return nil, fmt.Errorf("kuota harian habis (Limit 5/hari untuk Free User). Upgrade ke Premium untuk unlimited.")
+			return nil, fmt.Errorf("Daily Limit User")
 		}
 	}
 

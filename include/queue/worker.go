@@ -19,7 +19,7 @@ type Job struct {
 type Worker struct {
 	Bot           *telego.Bot
 	jobQueue      chan Job
-	limiter       <-chan time.Time // Global limiter
+	limiter       <-chan time.Time
 	lastChatTimes map[int64]time.Time
 	chatMutex     sync.Mutex
 	delayPerChat  time.Duration
@@ -45,7 +45,7 @@ func (w *Worker) Start() {
 			case job := <-w.jobQueue:
 				w.processJob(job)
 			default:
-				// Tidak ada job, skip tick
+
 			}
 		}
 	}()
@@ -72,7 +72,7 @@ func (w *Worker) processJob(job Job) {
 	var messageText string
 
 	if err != nil {
-		messageText = fmt.Sprintf("❌ *Terjadi Kesalahan*\n\n`%s`", err.Error())
+		messageText = fmt.Sprintf("❌ *Any Err*\n\n`%s`", err.Error())
 	} else {
 		emoji := "⚪"
 		if result.Signal == "BUY 🟢" {
@@ -108,6 +108,6 @@ func (w *Worker) processJob(job Job) {
 	})
 
 	if err != nil {
-		util.Logger.Printf("Gagal mengirim pesan: %v", err)
+		util.Logger.Printf("Failed Send Message: %v", err)
 	}
 }

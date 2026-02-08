@@ -18,11 +18,10 @@ func HandleUpdate(update telego.Update, worker *queue.Worker) {
 
 	ctx := context.Background()
 
-	// Handle Command /start
 	if text == "/start" {
 		worker.Bot.SendMessage(ctx, &telego.SendMessageParams{
 			ChatID: telego.ChatID{ID: chatID},
-			Text:   "👋 Halo! Saya JEM_B0T.\n\nKetik `/analisis KODE.SAHAM` untuk memprediksi harga.\nContoh: `/analisis BBCA.JK`",
+			Text:   "👋 HELLO! I'm JEM_B0T.\n\nMsg `/analisis KODE.SAHAM` for price predict.\nExample: `/analisis BBCA.JK`",
 		})
 		return
 	}
@@ -32,13 +31,12 @@ func HandleUpdate(update telego.Update, worker *queue.Worker) {
 		if len(parts) < 2 {
 			worker.Bot.SendMessage(ctx, &telego.SendMessageParams{
 				ChatID: telego.ChatID{ID: chatID},
-				Text:   "⚠️ Format salah. Gunakan: `/analisis KODE.SAHAM`",
+				Text:   "⚠️ Wrong Format. Use: `/analisis KODE.SAHAM`",
 			})
 			return
 		}
 		symbol := strings.ToUpper(parts[1])
 
-		// Kirim ke Worker Queue
 		job := queue.Job{
 			ChatID: chatID,
 			Symbol: symbol,
@@ -47,7 +45,7 @@ func HandleUpdate(update telego.Update, worker *queue.Worker) {
 
 		worker.Bot.SendMessage(ctx, &telego.SendMessageParams{
 			ChatID: telego.ChatID{ID: chatID},
-			Text:   "⏳ Sedang menganalisis data di engine Python... Mohon tunggu sebentar ( estimasi 10-30 detik ).",
+			Text:   "Analyze Processing...",
 		})
 	}
 }

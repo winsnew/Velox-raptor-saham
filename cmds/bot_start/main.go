@@ -25,13 +25,10 @@ func main() {
 	util.InitLogger()
 	util.Logger.Println("Starting Trading Bot...")
 
-	// 2. Init Database
 	if err := storage.InitDB(viper.GetViper()); err != nil {
 		log.Fatalf("Failed to connect DB: %v", err)
 	}
 	util.Logger.Println("Database Connected")
-
-	// 3. Init Telegram Bot
 	botToken := viper.GetString("telegram.bot_token")
 	telegoBot, err := bot.InitBot(botToken)
 	if err != nil {
@@ -46,10 +43,9 @@ func main() {
 	worker.Start()
 	util.Logger.Println("Worker Started")
 
-	// 5. Long Polling Loop
 	updatesChan := make(chan telego.Update, 100)
 
-	// Goroutine Fetcher
+	// -- Fetcher --
 	go func() {
 		params := telego.GetUpdatesParams{
 			Timeout: viper.GetInt("telegram.polling_timeout"),
@@ -71,7 +67,7 @@ func main() {
 		}
 	}()
 
-	// Main Event Loop
+	// Main
 	util.Logger.Println("Bot is running...")
 	for update := range updatesChan {
 		bot.HandleUpdate(update, worker)

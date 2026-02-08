@@ -15,7 +15,7 @@ import (
 func CallPythonEngine(symbol string) (*models.AnalysisResult, error) {
 	apiURL := viper.GetString("python_service.url")
 	if apiURL == "" {
-		return nil, fmt.Errorf("python_service.url belum diset di config")
+		return nil, fmt.Errorf("python_service.url not set in config")
 	}
 
 	timeout := viper.GetInt("python_service.timeout_second")
@@ -31,7 +31,7 @@ func CallPythonEngine(symbol string) (*models.AnalysisResult, error) {
 
 	resp, err := client.Post(apiURL+"/analyze", "application/json", bytes.NewBuffer(jsonBody))
 	if err != nil {
-		return nil, fmt.Errorf("gagal koneksi ke python engine: %v", err)
+		return nil, fmt.Errorf("failed to connect python engine: %v", err)
 	}
 	defer resp.Body.Close()
 
@@ -39,7 +39,7 @@ func CallPythonEngine(symbol string) (*models.AnalysisResult, error) {
 
 	var result models.AnalysisResult
 	if err := json.Unmarshal(body, &result); err != nil {
-		return nil, fmt.Errorf("gagal parsing json response: %v (Raw: %s)", err, string(body))
+		return nil, fmt.Errorf("failed parsing json: %v (Raw: %s)", err, string(body))
 	}
 
 	return &result, nil
