@@ -1,0 +1,97 @@
+buat code program bot analisis saham dengan golang + telego, db (postgresql), dan viper, ini struktur project nya =
+analisis-market-bot/
+├─ cmd/
+│   └─ bot/
+│       └─ main.go            # entry point bot Telegram
+│
+├─ internal/
+│   ├─ bot/                   # Telegram bot core
+│   │   ├─ bot.go             # init bot (telego)
+│   │   └─ handler.go         # handle command & message
+│   │
+│   ├─ model/                 # GORM models
+│   │   └─ user.go            # user, plan, quota
+│   │
+│   ├─ service/               # business logic
+│   │   ├─ analysis.go        # rules free vs premium
+│   │   └─ python.go          # call python engine
+│   │
+│   ├─ queue/                 # rate limit & worker
+│   │   └─ worker.go
+│   │
+│   ├─ storage/               # database layer
+│   │   └─ db.go              # gorm init & migrate
+│   │
+│   └─ util/                  # helper kecil
+│       ├─ logger.go
+│       └─ time.go
+│
+├─ python/
+│   └─ analyze.py             # engine analisis saham
+│
+├─ config/config.yaml                # config (token, db, limit)
+├─ go.mod
+└─ go.sum
+
+Telegram limit tetap:
+1 msg / chat / detik
+30 msg / bot / detik
+
+handler → service → queue
+python engine async / pooled
+
+app:
+  name: trading-bot
+  env: production
+
+telegram:
+  token: "PASTE_BOT_TOKEN_DARI_BOTFATHER"
+  polling_timeout: 60
+
+database:
+  driver: postgres
+  host: localhost
+  port: 5432
+  user: trading_user
+  password: strong_password
+  name: trading_bot_db
+  sslmode: disable
+  max_open_conn: 20
+  max_idle_conn: 10
+
+limit:
+  bot_message_per_second: 25      # aman < 30
+  per_chat_delay_ms: 1100         # 1 pesan / chat / detik
+
+trading-bot/
+├─ cmd/
+│   └─ bot/
+│       └─ main.go
+│
+├─ internal/
+│   ├─ bot/
+│   │   ├─ bot.go          # init telego
+│   │   └─ handler.go      # command & message handler
+│   │
+│   ├─ model/
+│   │   └─ user.go
+│   │
+│   ├─ service/
+│   │   ├─ analysis.go
+│   │   └─ python.go
+│   │
+│   ├─ queue/
+│   │   └─ worker.go
+│   │
+│   ├─ storage/
+│   │   └─ db.go
+│   │
+│   └─ util/
+│       └─ logger.go
+│
+├─ python/
+│   └─ analyze.py
+│
+├─ config.yaml
+├─ go.mod
+└─ go.sum
